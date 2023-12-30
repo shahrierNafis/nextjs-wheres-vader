@@ -1,9 +1,9 @@
 "use client";
-import Image from "next/image";
 import Start from "./components/Start";
-import Target from "@/app/types/Target";
 import { useState } from "react";
 import Timer from "./components/Timer";
+import Target from "@/app/types/Target";
+import Targets from "./components/Targets";
 
 export default function Home() {
   const [targets, setTargets] = useState<Target[]>([]);
@@ -11,7 +11,8 @@ export default function Home() {
   return (
     <>
       <Start {...{ setTargets, setStart }} />
-      <Timer start={start} />
+      <Timer {...{ start }} />
+      <Targets {...{ targets }} />
     </>
   );
 }
