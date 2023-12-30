@@ -4,12 +4,14 @@ import { jwtDecode } from "jwt-decode";
 import Target from "@/app/types/Target";
 type tokenPayload = {
   targets: Target[];
-  start: Date;
+  start: string;
 };
 function Start({
   setTargets,
+  setStart,
 }: {
   setTargets: React.Dispatch<SetStateAction<Target[]>>;
+  setStart: React.Dispatch<SetStateAction<Date>>;
 }) {
   const [loading, setLoading] = React.useState(false);
   const [open, setOpen] = React.useState(true);
@@ -17,9 +19,9 @@ function Start({
     setLoading(true);
     start()
       .then((token) => {
-        const targets = jwtDecode<tokenPayload>(token)?.targets as Target[];
-        console.log(targets);
+        const { targets, start } = jwtDecode<tokenPayload>(token);
         setTargets(targets);
+        setStart(new Date(start));
       })
       .then(() => {
         setOpen(false);
