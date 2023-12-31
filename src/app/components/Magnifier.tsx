@@ -2,9 +2,7 @@ import { useCoordinatesStore, useMagnifierStore } from "@/useStore";
 import React from "react";
 
 function Magnifier({
-  magnifierSize = innerWidth / 3,
   src,
-  zoomLevel = 1.5,
 }: {
   magnifierSize?: number;
   src: string;
@@ -19,6 +17,9 @@ function Magnifier({
 
   const [clientX, clientY] = useCoordinatesStore((state) => state.clientXY);
 
+  const [magnifierSize] = useMagnifierStore((state) => [state.magnifierSize]);
+
+  const [zoomLevel] = useMagnifierStore((state) => [state.zoomLevel]);
   return (
     <div
       className="absolute pointer-events-none border bg-white bg-no-repeat rounded-full"

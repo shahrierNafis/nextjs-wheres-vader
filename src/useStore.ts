@@ -31,6 +31,12 @@ type magnifierState = {
 
   magnifierIsUsed: boolean;
   setMagnifierIsUsed: (magnifierIsUsed: boolean) => void;
+
+  magnifierSize: number;
+  setMagnifierSize: (magnifierSize: number) => void;
+
+  zoomLevel: number;
+  setZoomLevel: (zoomLevel: number) => void;
 };
 
 export const useMagnifierStore = create<magnifierState>((set) => ({
@@ -40,4 +46,8 @@ export const useMagnifierStore = create<magnifierState>((set) => ({
   setImageSize: ([w, h]) => set({ imageSize: [w, h] }),
   magnifierIsUsed: true,
   setMagnifierIsUsed: (magnifierIsUsed) => set({ magnifierIsUsed }),
+  magnifierSize: innerWidth / 3,
+  setMagnifierSize: (magnifierSize) => set({ magnifierSize }),
+  zoomLevel: 1.5,
+  setZoomLevel: (zoomLevel) => set({ zoomLevel }),
 }));

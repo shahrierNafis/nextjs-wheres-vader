@@ -6,6 +6,7 @@ import Target from "@/app/types/Target";
 import Targets from "./components/Targets";
 import WaldoImage from "./components/WaldoImage";
 import Magnifier from "./components/Magnifier";
+import MagnifierControl from "./components/MagnifierControl";
 const src = "/wheres-vader.jpg";
 
 export default function Home() {
@@ -17,6 +18,7 @@ export default function Home() {
       <Start {...{ setTargets, setStart }} />
       <Timer {...{ start }} />
       <Targets {...{ targets }} />
+      <MagnifierControl />
       <WaldoImage {...{ src }} />
       <Magnifier {...{ src }} />
     </>
