@@ -2,16 +2,11 @@ import React, { SetStateAction } from "react";
 import start from "../serverActions/start";
 import { jwtDecode } from "jwt-decode";
 import Target from "@/app/types/Target";
-type tokenPayload = {
-  targets: Target[];
-  start: string;
-};
+
 function Start({
-  setTargets,
-  setStart,
+  setToken,
 }: {
-  setTargets: React.Dispatch<SetStateAction<Target[]>>;
-  setStart: React.Dispatch<SetStateAction<Date>>;
+  setToken: React.Dispatch<SetStateAction<string>>;
 }) {
   const [loading, setLoading] = React.useState(false);
   const [open, setOpen] = React.useState(true);
@@ -19,9 +14,7 @@ function Start({
     setLoading(true);
     start()
       .then((token) => {
-        const { targets, start } = jwtDecode<tokenPayload>(token);
-        setTargets(targets);
-        setStart(new Date(start));
+        setToken(token);
       })
       .then(() => {
         setOpen(false);
