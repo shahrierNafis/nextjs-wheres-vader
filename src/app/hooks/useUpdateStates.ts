@@ -1,4 +1,8 @@
-import { useCoordinatesStore, useMagnifierStore } from "@/useStore";
+import {
+  useCoordinatesStore,
+  useDropdownStore,
+  useMagnifierStore,
+} from "@/useStore";
 import React, { useEffect } from "react";
 
 function useUpdateCoordinates(image: React.RefObject<HTMLImageElement>) {
@@ -12,8 +16,15 @@ function useUpdateCoordinates(image: React.RefObject<HTMLImageElement>) {
   const [setShowMagnifier] = useMagnifierStore((state) => [
     state.setShowMagnifier,
   ]);
-
+  const [setShowDropdown] = useDropdownStore((state) => [
+    state.setShowDropdown,
+  ]);
   useEffect(() => {
+    const imageRef = image.current;
+
+    function onClick(e: MouseEvent) {
+      setShowDropdown(true);
+    }
     function onMouseEnter(e: MouseEvent) {
       // update image size and turn-on magnifier
       const elem = e.currentTarget;
@@ -50,14 +61,22 @@ function useUpdateCoordinates(image: React.RefObject<HTMLImageElement>) {
       setShowMagnifier(false);
     };
 
-    image.current?.addEventListener("mouseenter", onMouseEnter);
-    image.current?.addEventListener("mousemove", onMouseMove);
-    image.current?.addEventListener("mouseleave", onMouseLeave);
-    return () => {};
+    imageRef?.addEventListener("mouseenter", onMouseEnter);
+    imageRef?.addEventListener("mousemove", onMouseMove);
+    imageRef?.addEventListener("mouseleave", onMouseLeave);
+    imageRef?.addEventListener("click", onClick);
+
+    return () => {
+      imageRef?.removeEventListener("mouseenter", onMouseEnter);
+      imageRef?.removeEventListener("mousemove", onMouseMove);
+      imageRef?.removeEventListener("mouseleave", onMouseLeave);
+      imageRef?.removeEventListener("click", onClick);
+    };
   }, [
     image,
     magnifierIsUsed,
     setClientXY,
+    setShowDropdown,
     setShowMagnifier,
     setSize,
     setXY,

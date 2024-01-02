@@ -7,6 +7,7 @@ import Targets from "./components/Targets";
 import WaldoImage from "./components/WaldoImage";
 import Magnifier from "./components/Magnifier";
 import MagnifierControl from "./components/MagnifierControl";
+import TargetsDropdown from "./components/TargetsDropdown";
 import { jwtDecode } from "jwt-decode";
 const src = "/wheres-vader.jpg";
 
@@ -30,6 +31,7 @@ export default function Home() {
       <MagnifierControl />
       <WaldoImage {...{ src }} />
       <Magnifier {...{ src }} />
+      <TargetsDropdown {...{ targets, token, setToken }} />
     </>
   );
 }

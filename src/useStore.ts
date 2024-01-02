@@ -51,3 +51,13 @@ export const useMagnifierStore = create<magnifierState>((set) => ({
   zoomLevel: 1.5,
   setZoomLevel: (zoomLevel) => set({ zoomLevel }),
 }));
+
+type DropdownState = {
+  showDropdown: boolean;
+  setShowDropdown: (showDropdown: boolean) => void;
+};
+
+export const useDropdownStore = create<DropdownState>((set) => ({
+  showDropdown: false,
+  setShowDropdown: (showDropdown) => set({ showDropdown }),
+}));
