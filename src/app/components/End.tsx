@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import submit from "../serverActions/submit";
 import { useRouter } from "next/navigation";
+import { ReloadIcon } from "@radix-ui/react-icons";
 
 function End({
   gameEnded,
@@ -17,7 +18,7 @@ function End({
   const [show, setShow] = useState(false);
   const [name, setName] = useState("");
   const router = useRouter();
-
+  const [loading, setLoading] = useState(false);
   useEffect(() => {
     (async () => {
       if (gameEnded) {
@@ -34,7 +35,7 @@ function End({
 
   async function onSubmit() {
     if (name != "") {
-      setShow(false);
+      setLoading(true);
       const recordID = await submit(token, name);
       if (recordID) {
         router.push(`/leaderboard?id=${recordID}`);
@@ -56,13 +57,24 @@ function End({
               value={name}
               onChange={(e) => setName(e.target.value)}
             />
-            <Button
-              className="m-2 p-2 sm:text-2xl lg:text-3xl xl:text-4xl 2xl:text-7xl font-StarJOut text-white hover:text-yellow-400 border border-white focus:ring-4 focus:outline-none focus:ring-yellow-300 font-medium rounded-lg px-5 py-2.5 text-center me-2 mb-2 dark:border-white dark:text-white dark:hover:text-yellow-400 dark:focus:ring-yellow-900"
-              onClick={onSubmit}
-              variant="outline"
-            >
-              Submit
-            </Button>
+            {loading ? (
+              <>
+                <Button>
+                  <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
+                  Loading...
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button
+                  className="m-2 p-2 sm:text-2xl lg:text-3xl xl:text-4xl 2xl:text-7xl font-StarJOut text-white hover:text-yellow-400 border border-white focus:ring-4 focus:outline-none focus:ring-yellow-300 font-medium rounded-lg px-5 py-2.5 text-center me-2 mb-2 dark:border-white dark:text-white dark:hover:text-yellow-400 dark:focus:ring-yellow-900"
+                  onClick={onSubmit}
+                  variant="outline"
+                >
+                  Submit
+                </Button>
+              </>
+            )}
           </div>
         </>
       )}
