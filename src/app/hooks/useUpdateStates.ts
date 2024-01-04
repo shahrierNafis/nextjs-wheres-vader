@@ -10,6 +10,7 @@ function useUpdateCoordinates(image: React.RefObject<HTMLImageElement>) {
   const [setXY] = useCoordinatesStore((state) => [state.setXY]);
   const [setXYpercent] = useCoordinatesStore((state) => [state.setXYpercent]);
   const [setClientXY] = useCoordinatesStore((state) => [state.setClientXY]);
+  const [setPageXY] = useCoordinatesStore((state) => [state.setPageXY]);
   const [magnifierIsUsed] = useMagnifierStore((state) => [
     state.magnifierIsUsed,
   ]);
@@ -19,6 +20,7 @@ function useUpdateCoordinates(image: React.RefObject<HTMLImageElement>) {
   const [setShowDropdown] = useDropdownStore((state) => [
     state.setShowDropdown,
   ]);
+
   useEffect(() => {
     const imageRef = image.current;
 
@@ -42,6 +44,7 @@ function useUpdateCoordinates(image: React.RefObject<HTMLImageElement>) {
       ).getBoundingClientRect();
 
       const { pageX, pageY } = e;
+      setPageXY([pageX, pageY]);
 
       // cursor position relative to the image
       const x = pageX - left - scrollX;
@@ -76,6 +79,7 @@ function useUpdateCoordinates(image: React.RefObject<HTMLImageElement>) {
     image,
     magnifierIsUsed,
     setClientXY,
+    setPageXY,
     setShowDropdown,
     setShowMagnifier,
     setSize,

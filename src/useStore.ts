@@ -9,6 +9,9 @@ type Coordinates = {
 
   clientXY: [x: number, y: number]; // relative to the viewport XY
   setClientXY: ([x, y]: [number, number]) => void;
+
+  pageXY: [x: number, y: number]; // relative to the document
+  setPageXY: ([x, y]: [number, number]) => void;
 };
 
 export const useCoordinatesStore = create<Coordinates>((set) => ({
@@ -20,6 +23,9 @@ export const useCoordinatesStore = create<Coordinates>((set) => ({
 
   clientXY: [0, 0],
   setClientXY: ([x, y]) => set({ clientXY: [x, y] }),
+
+  pageXY: [0, 0],
+  setPageXY: ([x, y]) => set({ pageXY: [x, y] }),
 }));
 
 type magnifierState = {
@@ -60,4 +66,13 @@ type DropdownState = {
 export const useDropdownStore = create<DropdownState>((set) => ({
   showDropdown: false,
   setShowDropdown: (showDropdown) => set({ showDropdown }),
+}));
+
+type WaldoImageState = {
+  image: React.RefObject<HTMLImageElement> | null;
+  setImage: (image: React.RefObject<HTMLImageElement> | null) => void;
+};
+export const useWaldoImageStore = create<WaldoImageState>((set) => ({
+  image: null,
+  setImage: (image) => set({ image }),
 }));
