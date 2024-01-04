@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import fonts from "@/../public/fonts/fonts";
-import { Toaster } from "@/components/ui/toaster";
 
 const fontVars = fonts.map((font) => font.variable).join(" ");
 const inter = Inter({ subsets: ["latin"] });
@@ -19,7 +18,6 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${fontVars} ${inter.className}`}>{children}</body>
-      <Toaster />
     </html>
   );
 }

@@ -3,6 +3,7 @@ import end from "../serverActions/end";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import submit from "../serverActions/submit";
+import { useRouter } from "next/navigation";
 
 function End({
   gameEnded,
@@ -15,6 +16,8 @@ function End({
 }) {
   const [show, setShow] = useState(false);
   const [name, setName] = useState("");
+  const router = useRouter();
+
   useEffect(() => {
     (async () => {
       if (gameEnded) {
@@ -29,10 +32,13 @@ function End({
     return () => {};
   }, [setToken, gameEnded, token]);
 
-  function onSubmit() {
+  async function onSubmit() {
     if (name != "") {
       setShow(false);
-      submit(token, name);
+      const recordID = await submit(token, name);
+      if (recordID) {
+        router.push(`/leaderboard?id=${recordID}`);
+      }
     }
   }
   return (

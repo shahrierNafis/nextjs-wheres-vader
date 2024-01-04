@@ -19,13 +19,11 @@ export default async function submit(token: string, name: string) {
     if (data == undefined) {
       throw new Error("Invalid token");
     } else {
-      if (data.targets.length == 0) {
-        firestore
-          .collection("records")
-          .add({ name, start: data.start, end: data.end })
-          .then((DocumentReference) => {
-            return DocumentReference.id;
-          });
+      if (data.targets.length == 0 && data.end && data.start) {
+        const time = new Date(
+          new Date(data.end).getTime() - new Date(data.start).getTime()
+        );
+        return (await firestore.collection("records").add({ name, time })).id;
       }
     }
   } else {
@@ -34,6 +32,6 @@ export default async function submit(token: string, name: string) {
 }
 interface JwtPayload {
   targets: Target[];
-  start: Date;
-  end?: Date;
+  start: string;
+  end?: string;
 }
