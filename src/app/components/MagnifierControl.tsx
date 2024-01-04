@@ -16,11 +16,13 @@ function MagnifierControl() {
     state.setZoomLevel,
   ]);
   function handleSizeChange() {
-    const ratio = innerWidth / magnifierSize;
-    if (ratio != 5) {
-      setMagnifierSize(innerWidth / (ratio + 1));
-    } else {
-      setMagnifierSize(innerWidth / 2);
+    if (typeof window !== "undefined") {
+      const ratio = innerWidth / magnifierSize;
+      if (ratio != 5) {
+        setMagnifierSize(innerWidth / (ratio + 1));
+      } else {
+        setMagnifierSize(innerWidth / 2);
+      }
     }
   }
   function handleZoomLevelChange() {
@@ -28,6 +30,11 @@ function MagnifierControl() {
       setZoomLevel(zoomLevel + 0.5);
     } else {
       setZoomLevel(1.5);
+    }
+  }
+  function getMagnifierSizeRatio() {
+    if (typeof window !== "undefined") {
+      return `1/${innerWidth / magnifierSize}`;
     }
   }
   return (
@@ -43,7 +50,7 @@ function MagnifierControl() {
           className="border shadow rounded max-w-fit p-2 "
           onClick={handleSizeChange}
         >
-          size:1/{innerWidth / magnifierSize}
+          size:{getMagnifierSizeRatio()}
         </button>
         <button
           className="border shadow rounded max-w-fit p-2 "

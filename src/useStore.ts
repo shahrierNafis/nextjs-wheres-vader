@@ -45,18 +45,24 @@ type magnifierState = {
   setZoomLevel: (zoomLevel: number) => void;
 };
 
-export const useMagnifierStore = create<magnifierState>((set) => ({
-  showMagnifier: false,
-  setShowMagnifier: (showMagnifier) => set({ showMagnifier }),
-  imageSize: [0, 0],
-  setImageSize: ([w, h]) => set({ imageSize: [w, h] }),
-  magnifierIsUsed: true,
-  setMagnifierIsUsed: (magnifierIsUsed) => set({ magnifierIsUsed }),
-  magnifierSize: innerWidth / 3,
-  setMagnifierSize: (magnifierSize) => set({ magnifierSize }),
-  zoomLevel: 1.5,
-  setZoomLevel: (zoomLevel) => set({ zoomLevel }),
-}));
+export const useMagnifierStore = create<magnifierState>((set) => {
+  let innerWidth = 1920;
+  if (typeof window !== "undefined") {
+    innerWidth = window.innerWidth;
+  }
+  return {
+    showMagnifier: false,
+    setShowMagnifier: (showMagnifier) => set({ showMagnifier }),
+    imageSize: [0, 0],
+    setImageSize: ([w, h]) => set({ imageSize: [w, h] }),
+    magnifierIsUsed: true,
+    setMagnifierIsUsed: (magnifierIsUsed) => set({ magnifierIsUsed }),
+    magnifierSize: innerWidth / 3,
+    setMagnifierSize: (magnifierSize) => set({ magnifierSize }),
+    zoomLevel: 1.5,
+    setZoomLevel: (zoomLevel) => set({ zoomLevel }),
+  };
+});
 
 type DropdownState = {
   showDropdown: boolean;
