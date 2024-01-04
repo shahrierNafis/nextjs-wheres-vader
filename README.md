@@ -1,4 +1,12 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+Based on Where's Waldo (or Where's Wally), this is a photo-tagging game in which you need to search for and tag the 3 characters. Players are timed and their score is kept,then their names are displayed on the leaderboard at the end.
+
+Built with next.js, TypeScript and Firebase.
+
+[View live](https://nextjs-wheres-vader.vercel.app/)
+
+## Screenshots
+
+<img src="image.png" width="45%"></img> <img src="image-1.png" width="45%"></img>
 
 ## Getting Started
 
