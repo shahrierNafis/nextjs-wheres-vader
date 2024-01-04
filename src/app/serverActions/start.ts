@@ -60,4 +60,19 @@ const targetList = [
     id: 9,
     imgUrl: "/images/sheev-palpatine.jpg",
   },
+  {
+    name: "General Grievous",
+    id: 10,
+    imgUrl: "/images/general-grievous.jpg",
+  },
+  {
+    name: "BB-8",
+    id: 11,
+    imgUrl: "/images/BB-8.jpg",
+  },
+  {
+    name: "C-3PO",
+    id: 12,
+    imgUrl: "/images/C-3PO.jpg",
+  },
 ];
