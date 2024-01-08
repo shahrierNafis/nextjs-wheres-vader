@@ -1,44 +1,69 @@
 import React, { SetStateAction, useEffect } from "react";
 import start from "../serverActions/start";
 import { ReloadIcon } from "@radix-ui/react-icons";
-import { useMagnifierStore } from "@/useStore";
+import { useMagnifierControllerStore } from "@/useStore";
 
 function Start({
   setToken,
+  setImgBlob,
 }: {
   setToken: React.Dispatch<SetStateAction<string>>;
+  setImgBlob: React.Dispatch<SetStateAction<Blob | undefined>>;
 }) {
-  const [loading, setLoading] = React.useState(false);
+  const [didPressStart, setDidPressStart] = React.useState(false);
+  const [tokenLoading, setTokenLoading] = React.useState(false);
+  const [imgLoading, setImgLoading] = React.useState(true);
   const [open, setOpen] = React.useState(true);
-  const [setShowMagnifier] = useMagnifierStore((state) => [
+  const [setShowMagnifier] = useMagnifierControllerStore((state) => [
     state.setShowMagnifier,
   ]);
+
+  // get token
   function onClick() {
-    setLoading(true);
-    start()
-      .then((token) => {
-        setToken(token);
-      })
-      .then(() => {
-        setOpen(false);
-      });
+    setTokenLoading(true);
+    setDidPressStart(true);
+    start().then((token) => {
+      setToken(token);
+      setTokenLoading(false);
+    });
   }
 
+  // hide Magnifier if stat screen is open
   useEffect(() => {
     if (open) {
       setShowMagnifier(false);
     }
-
     return () => {};
   }, [open, setShowMagnifier]);
+
+  // download the image
+  useEffect(() => {
+    const controller = new AbortController();
+    fetch("/wheres-vader.jpg", { signal: controller.signal }).then((res) => {
+      res.blob().then((blob) => {
+        setImgBlob(blob);
+        setImgLoading(false);
+      });
+    });
+
+    return () => {
+      controller.abort();
+    };
+  }, [setImgBlob]);
+
+  // close start screen
+  useEffect(() => {
+    setOpen(!didPressStart ?? (tokenLoading && imgLoading));
+  }, [didPressStart, imgLoading, tokenLoading]);
+
   return (
     <>
       {open && (
-        <div className="flex flex-col items-center justify-center fixed bg-zinc-950 top-0 left-0 bottom-0 right-0">
-          <h2 className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl 2xl:text-8xl text-cyan-400 absolute top-0 left-0">
+        <div className="fixed top-0 bottom-0 left-0 right-0 flex flex-col items-center justify-center bg-zinc-950">
+          <h2 className="absolute top-0 left-0 text-2xl sm:text-3xl lg:text-4xl xl:text-5xl 2xl:text-8xl text-cyan-400">
             press start to play...
           </h2>
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl 2xl:text-9xl text-yellow-300 font-StarJHol">
+          <h1 className="text-3xl text-yellow-300 sm:text-4xl lg:text-5xl xl:text-6xl 2xl:text-9xl font-StarJHol">
             {"Where's vader"}
           </h1>
           <div className=" sm:text-2xl lg:text-3xl xl:text-4xl 2xl:text-7xl text-yellow-300 font-StarJedi max-w-[75vw] text-center">
@@ -46,14 +71,14 @@ function Start({
             lego Star Wars-themed {"Where's"} Waldo-style image. Enter your name
             and compete for a spot on the global leaderboard.
           </div>
-          {loading ? (
+          {tokenLoading && imgLoading ? (
             <>
               <button
                 disabled
                 type="button"
                 className="m-2 py-2.5 px-5 me-2 text-sm font-medium text-white rounded-lg border border-gray-200 bg-zinc-950 hover:text-yellow-300 hover:border-yellow-300 focus:z-10 focus:ring-4 focus:outline-none focus:ring-blue-700 focus:text-yellow-300   inline-flex items-center"
               >
-                <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
+                <ReloadIcon className="w-4 h-4 mr-2 animate-spin" />
                 Loading...
               </button>
             </>

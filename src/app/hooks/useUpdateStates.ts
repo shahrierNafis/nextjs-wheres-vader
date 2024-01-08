@@ -1,20 +1,23 @@
 import {
-  useCoordinatesStore,
+  useMagnifierControllerStore,
   useDropdownStore,
   useMagnifierStore,
 } from "@/useStore";
 import React, { useEffect } from "react";
 
-function useUpdateCoordinates(image: React.RefObject<HTMLImageElement>) {
+function useUpdateCoordinates(
+  image: React.RefObject<HTMLImageElement> | null,
+  src: string | undefined
+) {
   const [setSize] = useMagnifierStore((state) => [state.setImageSize]);
-  const [setXY] = useCoordinatesStore((state) => [state.setXY]);
-  const [setXYpercent] = useCoordinatesStore((state) => [state.setXYpercent]);
-  const [setClientXY] = useCoordinatesStore((state) => [state.setClientXY]);
-  const [setPageXY] = useCoordinatesStore((state) => [state.setPageXY]);
-  const [magnifierIsUsed] = useMagnifierStore((state) => [
+  const [setXY] = useMagnifierStore((state) => [state.setXY]);
+  const [setXYpercent] = useMagnifierStore((state) => [state.setXYpercent]);
+  const [setClientXY] = useMagnifierStore((state) => [state.setClientXY]);
+  const [setPageXY] = useMagnifierStore((state) => [state.setPageXY]);
+  const [magnifierIsUsed] = useMagnifierControllerStore((state) => [
     state.magnifierIsUsed,
   ]);
-  const [setShowMagnifier] = useMagnifierStore((state) => [
+  const [setShowMagnifier] = useMagnifierControllerStore((state) => [
     state.setShowMagnifier,
   ]);
   const [setShowDropdown] = useDropdownStore((state) => [
@@ -22,6 +25,9 @@ function useUpdateCoordinates(image: React.RefObject<HTMLImageElement>) {
   ]);
 
   useEffect(() => {
+    if (!image) {
+      return;
+    }
     const imageRef = image.current;
 
     function onClick(e: MouseEvent) {
@@ -76,6 +82,7 @@ function useUpdateCoordinates(image: React.RefObject<HTMLImageElement>) {
       imageRef?.removeEventListener("click", onClick);
     };
   }, [
+    src,
     image,
     magnifierIsUsed,
     setClientXY,

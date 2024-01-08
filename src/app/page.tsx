@@ -14,13 +14,14 @@ import { Toaster } from "@/components/ui/toaster";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 
-const src = "/wheres-vader.jpg";
-
 export default function Home() {
   const [targets, setTargets] = useState<Target[]>([]);
   const [start, setStart] = useState<Date>(new Date());
   const [token, setToken] = useState<string>("");
   const [gameEnded, setGameEnded] = useState(false);
+  const [imgBlob, setImgBlob] = useState<Blob>();
+  const [imgSrc, setImgSrc] = useState<string>();
+
   const router = useRouter();
   useEffect(() => {
     if (token != "") {
@@ -32,11 +33,19 @@ export default function Home() {
       }
     }
   }, [token]);
+
+  useEffect(() => {
+    if (imgBlob) {
+      setImgSrc(URL.createObjectURL(imgBlob));
+    }
+    return () => {};
+  }, [imgBlob]);
+
   return (
     <>
-      <Start {...{ setToken }} />
+      <Start {...{ setToken, setImgBlob }} />
       <div className="flex flex-col h-dvh">
-        <div className="flex bg-zinc-950 w-screen justify-center items-center">
+        <div className="flex items-center justify-center w-screen bg-zinc-950">
           <Targets {...{ targets }} />
           <Timer {...{ start }} />
           <MagnifierControl />
@@ -48,10 +57,10 @@ export default function Home() {
           </Button>
         </div>
         <div className="flex-grow-0 overflow-y-scroll no-scrollbar">
-          <WaldoImage {...{ src }} />
+          <WaldoImage src={imgSrc} />
         </div>
       </div>
-      <Magnifier {...{ src }} />
+      <Magnifier src={imgSrc} />
       <TargetsDropdown {...{ targets, token, setToken }} />
       <Toaster />
 

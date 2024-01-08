@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import Target from "../types/Target";
-import { useCoordinatesStore, useDropdownStore } from "@/useStore";
+import { useDropdownStore, useMagnifierStore } from "@/useStore";
 import Image from "next/image";
 import capture from "../serverActions/capture";
 import { useToast } from "@/components/ui/use-toast";
@@ -18,8 +18,8 @@ function TargetsDropdown({
     state.showDropdown,
     state.setShowDropdown,
   ]);
-  const [clientX, clientY] = useCoordinatesStore((state) => state.clientXY);
-  const [percentX, percentY] = useCoordinatesStore((state) => state.XYpercent);
+  const [clientX, clientY] = useMagnifierStore((state) => state.clientXY);
+  const [percentX, percentY] = useMagnifierStore((state) => state.XYpercent);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -41,12 +41,12 @@ function TargetsDropdown({
     showDropdown && (
       <>
         <div
-          className="fixed top-0 left-0 bottom-0 right-0"
+          className="fixed top-0 bottom-0 left-0 right-0"
           onClick={() => setShowDropdown(false)}
         >
           <div
             ref={dropdown}
-            className="flex flex-col max-w-fit absolute bg-zinc-950 m-2"
+            className="absolute flex flex-col m-2 max-w-fit bg-zinc-950"
             style={{
               top: `${clientY}px`,
               left: `${clientX}px`,
@@ -55,7 +55,7 @@ function TargetsDropdown({
             {targets.map((target) => (
               <div
                 key={target.id}
-                className="border shadow rounded flex items-center flex-shrink-0 min-w-fit text-nowrap"
+                className="flex items-center flex-shrink-0 border rounded shadow min-w-fit text-nowrap"
                 onClick={async () => {
                   setShowDropdown(false);
                   const newToken = await capture(

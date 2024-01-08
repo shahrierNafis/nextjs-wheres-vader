@@ -1,43 +1,35 @@
-import {
-  useCoordinatesStore,
-  useMagnifierStore,
-  useWaldoImageStore,
-} from "@/useStore";
+import { useMagnifierControllerStore, useMagnifierStore } from "@/useStore";
 import React, { useCallback, useEffect, useState } from "react";
 
 function Magnifier({
   src,
 }: {
   magnifierSize?: number;
-  src: string;
+  src: string | undefined;
   zoomLevel?: number;
 }) {
   const [[imgWidth, imgHeight]] = useMagnifierStore((state) => [
     state.imageSize,
   ]);
+  const [[x, y], setXY] = useMagnifierStore((state) => [state.XY, state.setXY]);
+  const [pageX, pageY] = useMagnifierStore((state) => state.pageXY);
+  const [clientX, clientY] = useMagnifierStore((state) => state.clientXY);
+  const [image] = useMagnifierStore((state) => [state.image]);
 
-  const [[x, y], setXY] = useCoordinatesStore((state) => [
-    state.XY,
-    state.setXY,
+  const [showMagnifier] = useMagnifierControllerStore((state) => [
+    state.showMagnifier,
   ]);
-  const [showMagnifier] = useMagnifierStore((state) => [state.showMagnifier]);
-
-  const [clientX, clientY] = useCoordinatesStore((state) => state.clientXY);
-
-  const [magnifierSize] = useMagnifierStore((state) => [state.magnifierSize]);
-
-  const [zoomLevel] = useMagnifierStore((state) => [state.zoomLevel]);
-
-  const [image] = useWaldoImageStore((state) => [state.image]);
-
-  const [pageX, pageY] = useCoordinatesStore((state) => state.pageXY);
+  const [magnifierSize] = useMagnifierControllerStore((state) => [
+    state.magnifierSize,
+  ]);
+  const [zoomLevel] = useMagnifierControllerStore((state) => [state.zoomLevel]);
 
   const [[scrollX, scrollY], setScroll] = useState([0, 0]);
 
   const updateCoordinates = useCallback(
     function () {
       if (image?.current) {
-        const { top, left } = image.current.getBoundingClientRect();
+        const { left, top } = image.current.getBoundingClientRect();
         const x = pageX - left - window.scrollX;
         const y = pageY - top - window.scrollY;
         setXY([x, y]);
@@ -49,21 +41,18 @@ function Magnifier({
 
   // update coordinates on scroll
   useEffect(() => {
-    image?.current?.parentElement?.addEventListener(
-      "scroll",
-      updateCoordinates
-    );
-    return () => {
-      image?.current?.parentElement?.removeEventListener(
-        "scroll",
-        updateCoordinates
-      );
-    };
+    if (image?.current?.parentElement) {
+      const scrollerElement = image.current.parentElement;
+      scrollerElement.addEventListener("scroll", updateCoordinates);
+      return () => {
+        scrollerElement.removeEventListener("scroll", updateCoordinates);
+      };
+    }
   }, [image, updateCoordinates]);
 
   return (
     <div
-      className="absolute pointer-events-none border bg-white bg-no-repeat rounded-full"
+      className="absolute bg-white bg-no-repeat border rounded-full pointer-events-none"
       style={{
         display: showMagnifier ? "" : "none",
         // set size of magnifier
