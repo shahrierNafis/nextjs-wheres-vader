@@ -3,6 +3,8 @@ import start from "../serverActions/start";
 import { ReloadIcon } from "@radix-ui/react-icons";
 import { useMagnifierControllerStore } from "@/useStore";
 import ParticleEffect from "./ParticleEffect";
+import axios from "axios";
+import { Progress } from "@/components/ui/progress";
 
 function Start({
   setToken,
@@ -18,6 +20,7 @@ function Start({
   const [setShowMagnifier] = useMagnifierControllerStore((state) => [
     state.setShowMagnifier,
   ]);
+  const [progress, setProgress] = React.useState(0);
 
   // get token
   function onClick() {
@@ -40,11 +43,20 @@ function Start({
   // download the image
   useEffect(() => {
     const controller = new AbortController();
-    fetch("/wheres-vader.jpg", { signal: controller.signal }).then((res) => {
-      res.blob().then((blob) => {
-        setImgBlob(blob);
-        setImgLoading(false);
-      });
+    axios("/wheres-vader.jpg", {
+      responseType: "blob",
+      signal: controller.signal,
+      onDownloadProgress: (progressEvent) => {
+        if (progressEvent.total) {
+          // Update progress
+          setProgress(
+            Math.round((progressEvent.loaded * 100) / progressEvent.total)
+          );
+        }
+      },
+    }).then((res) => {
+      setImgBlob(res.data as Blob);
+      setImgLoading(false);
     });
 
     return () => {
@@ -73,7 +85,11 @@ function Start({
             lego Star Wars-themed {"Where's"} Waldo-style image. Enter your name
             and compete for a spot on the global leaderboard.
           </div>
-          {tokenLoading && imgLoading ? (
+          <Progress
+            className="m-2 max-w-[75vw] ring-white ring-offset-1 ring-offset-black ring-opacity-25 ring"
+            value={progress}
+          />
+          {tokenLoading || imgLoading ? (
             <>
               <button
                 disabled
